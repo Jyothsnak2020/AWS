@@ -1,152 +1,420 @@
-﻿<?php
+<?php
 require('dbconn.php');
 ?>
 
-<?php 
+<?php
 
-
-if ($_SESSION['RollNo'] == 'admin' ) {
-
-    ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>LMS</title>
-        <link type="text/css" href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link type="text/css" href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-        <link type="text/css" href="css/theme.css" rel="stylesheet">
-        <link type="text/css" href="images/icons/css/font-awesome.css" rel="stylesheet">
-        <link type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600'
-            rel='stylesheet'>
-    </head>
-    <body>
-        <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-inverse-collapse">
-                        <i class="icon-reorder shaded"></i></a><a class="brand" href="index.php">LMS </a>
-                    <div class="nav-collapse collapse navbar-inverse-collapse">
-                        <ul class="nav pull-right">
-                            <li class="nav-user dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="images/user.png" class="nav-avatar" />
-                                <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="index.php">Your Profile</a></li>
-                                    <!--li><a href="#">Edit Profile</a></li>
-                                    <li><a href="#">Account Settings</a></li-->
-                                    <li class="divider"></li>
-                                    <li><a href="logout.php">Logout</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.nav-collapse -->
-                </div>
-            </div>
-            <!-- /navbar-inner -->
-        </div>
-        <!-- /navbar -->
-        <div class="wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="span3">
-                        <div class="sidebar">
-                            <ul class="widget widget-menu unstyled">
-                                <li class="active"><a href="index.php"><i class="menu-icon icon-home"></i>Home
-                                </a></li>
-                                <li class="active"><a href="../qr/index.php"><i class="menu-icon icon-home"></i>Visit Hours 
-                                </a></li>
-                                 <li><a href="message.php"><i class="menu-icon icon-inbox"></i>Messages</a>
-                                </li>
-                                <li><a href="recieve.php"><i class="menu-icon icon-inbox"></i>Recieve Message</a>
-                                </li>
-                                <li><a href="student.php"><i class="menu-icon icon-user"></i>Manage Students </a>
-                                </li>
-                                <li><a href="book.php"><i class="menu-icon icon-book"></i>All Books </a></li>
-                                <li><a href="addbook.php"><i class="menu-icon icon-edit"></i>Add Books </a></li>
-                                <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
-                                <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
-                                <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
-                                <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
-                            </ul>
-                            <ul class="widget widget-menu unstyled">
-                                <li><a href="logout.php"><i class="menu-icon icon-signout"></i>Logout </a></li>
-                            </ul>
-                        </div>
-                        <!--/.sidebar-->
-                    </div>
-                    <!--/.span3-->
-                    
-                    <div class="span9">
-                        <center>
-                            <div class="card" style="width: 50%;"> 
-                                <img class="card-img-top" src="images/profile2.png" alt="Card image cap">
-                                <div class="card-body">
-
-                                <?php
-                                $rollno = $_SESSION['RollNo'];
+                              $rollno = $_SESSION['RollNo'];
                                 $sql="select * from LMS.user where RollNo='$rollno'";
                                 $result=$conn->query($sql);
                                 $row=$result->fetch_assoc();
-                              
+                                
+                                $type = $row['Type'];
 
-                                $name=$row['Name'];
-                                $category=$row['Category'];
-                                $email=$row['EmailId'];
-                                $mobno=$row['MobNo'];
-                                ?>    
-                                    <i>
-                                    <h1 class="card-title"><center><?php echo $name ?></center></h1>
-                                    <br>
-                                    <p><b>Email ID: </b><?php echo $email ?></p>
-                                    <br>
-                                    <p><b>Mobile number: </b><?php echo $mobno ?></p>
-                                    </b>
-                                </i>
+                                // $name=$row['Name'];
+                                // $category=$row['Category'];
+                                // $email=$row['EmailId'];
+                                // $mobno=$row['MobNo'];
+                               
 
-                                </div>
-                            </div>
-                        <br>
-                        <a href="edit_admin_details.php" class="btn btn-primary">Edit Details</a>
-                        <a href="addadmin.php" class="btn btn-primary">Add admin</a>
+if ($type == 'Student')
 
-                        <a href="addstaff.php" class="btn btn-primary">Add Library staff/Librarian</a>
-                        <a href="../staff/index.php" class="btn btn-primary">Go to staff domain</a>
-                           <a href="../librarian/index.php" class="btn btn-primary">Go to librarian domain</a>
-                        </center>               
-                    </div>
-                    
-                    <!--/.span9-->
-                </div>
-            </div>
-            <!--/.container-->
-        </div>
-<div class="footer">
-            <div class="container">
-                <b class="copyright">&copy; 2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan </b>All rights reserved.
-            </div>
-        </div>
-        
-        <!--/.wrapper-->
-        <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
-        <script src="scripts/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
-        <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="scripts/flot/jquery.flot.js" type="text/javascript"></script>
-        <script src="scripts/flot/jquery.flot.resize.js" type="text/javascript"></script>
-        <script src="scripts/datatables/jquery.dataTables.js" type="text/javascript"></script>
-        <script src="scripts/common.js" type="text/javascript"></script>
+{
+
+echo header("Location:../student/index.php");
+
+}
+
+if($rollno == NULL){
+echo header("location:../");
+}
+
+  ?>
+
+
+
+
+
+
+
+<?php  
+
+// Connect to the Database 
+include('config.php');
+
+$insert = false;
+$update = false;
+$empty = false;
+$delete = false;
+$already_card = false;
+
+
+
+if(isset($_GET['delete'])){
+  $sno = $_GET['delete'];
+  $delete = true;
+  $sql = "DELETE FROM `cards` WHERE `sno` = $sno";
+  $result = mysqli_query($conn, $sql);
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+    if (isset( $_POST['snoEdit'])){
+      // Update the record
+        $sno = $_POST["snoEdit"];
+        $name = $_POST["nameEdit"];
+        $id_no = $_POST["id_noEdit"];
+
+      // Sql query to be executed
+      $sql = "UPDATE `cards` SET `name` = '$name' , `id_no` = '$id_no' WHERE `cards`.`sno` = $sno";
+      $result = mysqli_query($conn, $sql);
+      if($result){
+        $update = true;
+    }
+    else{
+        echo "We could not update the record successfully";
+    }
+}
+else{
+    $name = $_POST["name"];
+    $id_no = $_POST["id_no"];
+    $grade = $_POST['grade'];
+    $dob = $_POST['dob'];
+    $address = $_POST['address'];
+    $email = $_POST['email'];
+    $exp_date = $_POST['exp_date'];
+    $phone = $_POST['phone'];
+
+    if($name == '' || $id_no == ''){
+        $empty = true;
+    }
+    else{
+        //Check that Card no. is Already Registerd or not.
+        $querry = mysqli_query($conn, "SELECT * FROM cards WHERE id_no= '$id_no' ");
+        if(mysqli_num_rows($querry)>0)
+        {
+             $already_card = true;
+        }
+        else{
+
+
+          // image upload 
+          $uploaddir = 'assets/uploads/';
+          $uploadfile = $uploaddir . basename($_FILES['image']['name']);
+
       
-    </body>
+          if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadfile)) {
+              
+          } else {
+              echo "Possible file upload attack!\n";
+          }
+  // Sql query to be executed
+  $sql = "INSERT INTO `cards`(`name`,`grade`, `id_no`, `email`, `phone`, `address`, `dob`, `exp_date`, `image`) VALUES ('$name','$grade','$id_no','$email','$phone','$address','$dob','$exp_date','$uploadfile')"; 
+
+  // $sql = "INSERT INTO `cards` (`name`, `id_no`) VALUES ('$name', '$id_no')";
+  $result = mysqli_query($conn, $sql);
+
+
+
+   
+  if($result){ 
+      $insert = true;
+  }
+  else{
+      echo "The record was not inserted successfully because of this error ---> ". mysqli_error($conn);
+  } 
+}
+}
+}
+
+ }
+?>
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="icon" type="image/png" href="images/favicon.png"/>
+  <title>LIBRARY CARD & QR GENERATOR</title>
+
+</head>
+
+<body>
+ 
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit This Card</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <form method="POST">
+          <div class="modal-body">
+            <input type="hidden" name="snoEdit" id="snoEdit">
+            <div class="form-group">
+              <label for="name">Student Name</label>
+              <input type="text" class="form-control" id="nameEdit" name="nameEdit">
+            </div>
+
+            <div class="form-group">
+              <label for="desc">ID Card Number:</label>
+              <input class="form-control" id="id_noEdit" name="id_noEdit" rows="3"></input>
+            </div> 
+          </div>
+          <div class="modal-footer d-block mr-auto">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- Navigation bar start  -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-image: linear-gradient(to right, rgb(0,300,255), rgb(93,4,217));">
+  <a class="navbar-brand" href="#"><img src="assets/images/codingcush-logo.png" alt=""></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      
+     
+   
+      
+    </ul>
+  
+  </div>
+</nav>
+<!-- Navigation bar end  -->
+
+  <?php
+  if($insert){
+    echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+    <strong>Success!</strong> Your Card has been inserted successfully
+    <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+      <span aria-hidden='true'>×</span>
+    </button>
+  </div>";
+  }
+  ?>
+  <?php
+  if($delete){
+    echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+    <strong>Success!</strong> Your Card has been deleted successfully
+    <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+      <span aria-hidden='true'>×</span>
+    </button>
+  </div>";
+  }
+  ?>
+  <?php
+  if($update){
+    echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+    <strong>Success!</strong> Your Card has been updated successfully
+    <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+      <span aria-hidden='true'>×</span>
+    </button>
+  </div>";
+  }
+  ?>
+   <?php
+  if($empty){
+    echo "<div class='alert alert-warning alert-dismissible fade show' role='alert'>
+    <strong>Error!</strong> The Fields Cannot Be Empty! Please Give Some Values.
+    <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+      <span aria-hidden='true'>×</span>
+    </button>
+  </div>";
+  }
+  ?>
+     <?php
+  if($already_card){
+    echo "<div class='alert alert-warning alert-dismissible fade show' role='alert'>
+    <strong>Error!</strong> This Card is Already Added.
+    <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+      <span aria-hidden='true'>×</span>
+    </button>
+  </div>";
+  }
+  ?>
+  <div class="container my-4">
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  <i class="fa fa-plus"></i> Add New Card
+  </button>
+  <a href="id-card.php" class="btn btn-primary">
+  <i class="fa fa-address-card"></i> Generate ID Card
+</a>
+  <a href="generator.php" class="btn btn-primary">
+  <i class="fa fa-address-card"></i> Generate QR
+</a>
+<a href="../qr/index.php" class="btn btn-primary">
+  <i class="fa fa-plus"></i> Back to QR SCAN
+</a>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+
+    <form method="POST" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="inputCity">Student Name</label>
+        <input type="text" name="name" class="form-control" id="inputCity">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="inputState">Department</label>
+        <select name="grade" class="form-control">
+          <option selected>Choose...</option>
+          <option value="Computer Studies">Computer Studies</option>
+              <option value="Education">Education</option>
+              <option value="Agriculture">Argiculture</option>
+              <option val ue="Jr.High School">Jr.High School</option>
+              <option value="Sr.High School">Sr.High School</option>  
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="inputZip">Category</label>
+         <select name="dob" class="form-control">
+          <option selected>Choose...</option>
+          <option value="Student">Student</option>
+              <option value="Staff">Staff</option>
+              <option value="Faculty">Faculty</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="inputCity">Address</label>
+        <input type="text" name="address" class="form-control">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="inputState">Email Id</label>
+        <input type="text" name="email" class="form-control">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="inputZip">Date Of Birth</label>
+        <input type="input" name="exp_date" class="form-control">
+      </div>
+    </div>
+      
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="id_no">ID Card No.</label>
+          <input class="form-control" id="id_no" name="id_no" ></input>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="phone">Phone No.</label>
+          <input class="form-control" id="phone" name="phone" ></input>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="photo">Photo</label>
+          <input type="file" name="image" required />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> Add Card</button>
+    </form>
+  </div>
+</div>
+
+  <div class="container my-4">
+
+
+    <table class="table" id="myTable">
+      <thead>
+        <tr>
+          <th scope="col">S.No</th>
+          <th scope="col">Name</th>
+          <th scope="col">ID Card No.</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php 
+          $sql = "SELECT * FROM `cards` order by 1 DESC";
+          $result = mysqli_query($conn, $sql);
+          $sno = 0;
+          while($row = mysqli_fetch_assoc($result)){
+            $sno = $sno + 1;
+            echo "<tr>
+            <th scope='row'>". $sno . "</th>
+            <td>". $row['name'] . "</td>
+            <td>". $row['id_no'] . "</td>
+            <td> <button class='edit btn btn-sm btn-primary' id=".$row['sno'].">Edit</button> <button class='delete btn btn-sm btn-primary' id=d".$row['sno'].">Delete</button>  </td>
+          </tr>";
+        } 
+          ?>
+
+
+      </tbody>
+    </table>
+  </div>
+  <hr>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#myTable').DataTable();
+
+    });
+  </script>
+  <script>
+    edits = document.getElementsByClassName('edit');
+    Array.from(edits).forEach((element) => {
+      element.addEventListener("click", (e) => {
+        console.log("edit ");
+        tr = e.target.parentNode.parentNode;
+        name = tr.getElementsByTagName("td")[0].innerText;
+        id_no = tr.getElementsByTagName("td")[1].innerText;
+        console.log(name, id_no);
+        nameEdit.value = name;
+        id_noEdit.value = id_no;
+        snoEdit.value = e.target.id;
+        console.log(e.target.id)
+        $('#editModal').modal('toggle');
+      })
+    })
+
+    deletes = document.getElementsByClassName('delete');
+    Array.from(deletes).forEach((element) => {
+      element.addEventListener("click", (e) => {
+        console.log("edit ");
+        sno = e.target.id.substr(1);
+
+        if (confirm("Are you sure you want to delete this note!")) {
+          console.log("yes");
+          window.location = `index.php?delete=${sno}`;
+          // TODO: Create a form and use post request to submit a form
+        }
+        else {
+          console.log("no");
+        }
+      })
+    })
+  </script>
+</body>
 
 </html>
-
-
-<?php }
-else {
-    echo "<script type='text/javascript'>alert('Access Denied!!!')</script>";
-} ?>
