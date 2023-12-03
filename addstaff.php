@@ -42,7 +42,7 @@ background-color: #808080;
 	<div class="container">
 
 		<div class="login">
-			<h2>Add New Admin User</h2>
+			<h2>Add New Library User</h2>
 			<form action="index.php" method="post">
 				<div class="send-button">
 			   <a href="index.php">BACK</a>
@@ -64,7 +64,7 @@ background-color: #808080;
 
 		<div class="register">
 			<h2>Register</h2>
-			<form action="addadmin.php" method="post">
+			<form action="addstaff.php" method="post">
 				<input type="text" Name="Name" placeholder="Name" required>
 
 				<input type="text" Name="Email" placeholder="Email" required>
@@ -72,12 +72,12 @@ background-color: #808080;
 				<input type="text" Name="PhoneNumber" placeholder="Phone Number" required>
 				<input type="text" Name="RollNo" placeholder="ID Number" required="">
 				
-				<!-- <select name="Category" id="Category">
-					<option value="Librarian">Librarian</option>
-					<option value="Lirbary Staff ">Library Staff </option>
+				<select name="type" id="Category" style="background-color: dimgrey; opacity: 0.2;">
+					<option value="librarian">Librarian</option>
+					<option value="staff ">Library Staff </option>
 					
 					
-				</select> -->
+				</select>
 				<br>
 			
 			
@@ -108,7 +108,7 @@ if(isset($_POST['signup']))
 	$mobno=$_POST['PhoneNumber'];
 	$rollno=$_POST['RollNo'];
 	$category=$_POST['Category'];
-	$type='Admin';
+	$type=$_POST['type'];
 
 	$sql="insert into LMS.user (Name,Type,Category,RollNo,EmailId,MobNo,Password) values ('$name','$type','$category','$rollno','$email','$mobno','$password')";
 

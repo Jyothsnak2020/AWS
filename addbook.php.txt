@@ -68,7 +68,6 @@ if ($_SESSION['RollNo']== 'admin') {
                                 <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
                                 <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
@@ -95,7 +94,7 @@ if ($_SESSION['RollNo']== 'admin') {
                                         <div class="control-group">
                                             <label class="control-label" for="Section"><b>Book Section:</b></label>
                                             <div class="controls">
-                                                <select name = "Section" tabindex="1" value="SC" data-placeholder="" class="span8" required>
+                                                <select name = "Section" tabindex="1" value="SC" data-placeholder="" class="span6" required>
                                                   <!--   <option value="<?php echo $status?>"><?php echo $status ?> </option> -->
                                                   <option value=""></option>
                                                     <option value="General Reference">General Reference</option>
@@ -123,19 +122,19 @@ if ($_SESSION['RollNo']== 'admin') {
                                                 <input type="text" id="book" name="book" placeholder="Textbook" class="span8" required>
                                             </div>
                                         </div>
-                                          <div class="control-group">
-                                            <label class="control-label" for="Title"><b>Volume</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Title" name="Title" placeholder="Volumes" class="span8" required>
-                                            </div>
-                                        </div>
+                                        
                                         <div class="control-group">
-                                            <label class="control-label" for="Copyright"><b>Copyright Year</b></label>
+                                            <label class="control-label" for="Copyright"><b>Copyright</b></label>
                                             <div class="controls">
                                                 <input type="text" id="Copyright" name="Copyright" placeholder="Copyright" class="span8" required>
                                             </div>
                                         </div>
-                                      
+                                        <div class="control-group">
+                                            <label class="control-label" for="Title"><b>No. of Title</b></label>
+                                            <div class="controls">
+                                                <input type="text" id="Title" name="Title" placeholder="Volumes" class="span8" required>
+                                            </div>
+                                        </div>
                                         <div class="control-group">
                                             <label class="control-label" for="Availability"><b>Number of Copies</b></label>
                                             <div class="controls">
@@ -157,14 +156,14 @@ if ($_SESSION['RollNo']== 'admin') {
                                          <div class="control-group">
                                             <label class="control-label" for="status"><b>Book Status:</b></label>
                                             <div class="controls">
-                                                 <select name = "status" tabindex="1" value="SC" data-placeholder="Select Status" class="span8" required>
+                                                <select name = "status" tabindex="1" value="SC" data-placeholder="Select Status" class="span6" required>
                                                   <!--   <option value="<?php echo $status?>"><?php echo $status ?> </option> -->
                                                   <option value=""></option>
                                                     <option value="GOOD">GOOD</option>
                                                     <option value="DAMAGE">DAMAGE</option>
                                                     <option value="DILAPIDATED">DILAPIDATED</option>
+                                                    
                                                 </select>
-                                                
                                             </div>
                                     </div>
 
@@ -225,16 +224,15 @@ if(isset($_POST['submit']))
 $Section = $_POST['Section'];
 $Subject = $_POST['Subject'];
 $book = $_POST['book'];
-$Title = $_POST['Title'];
 $Copyright = $_POST['Copyright'];
-
+$Title = $_POST['Title'];
 $availability = $_POST['availability'];
 $Author = $_POST['Author'];
 $ISBN = $_POST['ISBN'];
 $status = $_POST['status'];
 
 
- $sql1 = "INSERT INTO `book`( `Section`, `Subject`, `Textbook`, `Volume`, `Year`, `Availability`, `Author`, `ISBN`, `Status`) VALUES ('$Section','$Subject','$book','$Title','$Copyright','$availability','$Author','$ISBN','$status')";
+ $sql1 = "INSERT INTO `book`( `Section`, `Subject`, `Textbook`, `Volume`, `Year`, `Availability`, `Author`, `ISBN`, `Status`) VALUES ('$Section','$Subject','$book','$Copyright','$Title','$availability','$Author','$ISBN','$status')";
 
 if($conn->query($sql1) === TRUE){
 $sql2="select max(BookId) as x from LMS.book";

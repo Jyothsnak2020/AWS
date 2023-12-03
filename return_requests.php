@@ -3,7 +3,24 @@ require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
+if ($_SESSION['RollNo'] == false) {
+
+ echo header("Location:nicetry.php");
+}
+$rollno = $_SESSION['RollNo'];
+                                $sql="select * from LMS.user where RollNo='$rollno'";
+                                $result=$conn->query($sql);
+                                $row=$result->fetch_assoc();
+                                
+                                $type = $row['Type'];
+
+if ($type == 'Student') {
+    
+
+echo header("Location:../student/index.php");
+
+}
+if ($type =$row['Type'] !== 'librarian') {
     ?>
 
 <!DOCTYPE html>
@@ -52,7 +69,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
                 <div class="row">
                     <div class="span3">
                         <div class="sidebar">
-                          <ul class="widget widget-menu unstyled">
+                           <ul class="widget widget-menu unstyled">
                                 <li class="active"><a href="index.php"><i class="menu-icon icon-home"></i>Home
                                 </a></li>
                                 <li class="active"><a href="../qr/index.php"><i class="menu-icon icon-home"></i>Visit Hours 
@@ -69,7 +86,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
                                  <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
-                                <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
+                                   <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
                                 <li><a href="logout.php"><i class="menu-icon icon-signout"></i>Logout </a></li>
@@ -77,51 +94,58 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
                         </div>
                         <!--/.sidebar-->
                     </div>
-                    <!--/.span3-->
-
                     <div class="span9">
-                    <div class="content">
-
-                        <div class="module">
-                            <div class="module-head">
-                                <h3>Send a message</h3>
+                        <center>
+                        <a href="issue_requests.php" class="btn btn-info">Issue Requests</a>
+                        <a href="renew_requests.php" class="btn btn-info">Renew Request</a>
+                        <a href="return_requests.php" class="btn btn-info">Return Requests</a>
+                        </center>
+                        <h1><i>Return Requests</i></h1>
+                        <table class="table" id = "tables">
+                                  <thead>
+                                    <tr>
+                                      <th>Borrower's ID</th>
+                                      <th>Book Id</th>
+                                      <th>Book Name</th>
+                                      <th>Dues</th>
+                                      <th></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <?php
+                            $sql="select return.BookId,return.RollNo,Textbook,datediff(curdate(),Due_Date) as x from LMS.return,LMS.book,LMS.record where Date_of_Return is NULL and return.BookId=book.BookId and return.BookId=record.BookId and return.RollNo=record.RollNo";
+                            $result=$conn->query($sql);
+                            while($row=$result->fetch_assoc())
+                            {
+                                $bookid=$row['BookId'];
+                                $rollno=$row['RollNo'];
+                                $name=$row['Textbook'];
+                                $dues=$row['x'];
+                                
+                            
+                           
+                            ?>
+                                    <tr>
+                                      <td><?php echo strtoupper($rollno) ?></td>
+                                      <td><?php echo $bookid ?></td>
+                                      <td><b><?php echo $name ?></b></td>
+                                      <td><?php 
+                                      if($dues > 0)
+                                          echo $dues;
+                                          else
+                                          echo 0; ?></td>
+                                      <td><center>
+                                                                                
+                                        <a href="acceptreturn.php?id1=<?php echo $bookid; ?>&id2=<?php echo $rollno; ?>&id3=<?php echo $dues ?>" class="btn btn-success">Accept</a>
+                                         
+                                        <!--a href="rejectreturn.php?id1=<?php echo $bookid; ?>&id2=<?php echo $rollno; ?>" class="btn btn-danger">Reject</a-->
+                                    </center></td>
+                                    </tr>
+                               <?php } ?>
+                               </tbody>
+                                </table>
                             </div>
-                            <div class="module-body">
-
-                                    <br >
-
-                                    <form class="form-horizontal row-fluid" action="message.php" method="post">
-                                        <div class="control-group">
-                                            <label class="control-label" for="Rollno"><b>Receiver ID No:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="RollNo" name="RollNo" placeholder="Id No" class="span8" required >
-                                            </div>
-                                        </div>
-                                         <div class="control-group">
-                                            <label class="control-label" for="Sender"><b>Sender's Name:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Sender" name="Sender" placeholder="Input your name" class="span8" required>
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" for="Message"><b>Message:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Message" name="Message" placeholder="Enter Message" class="span8" required>
-                                            </div>
-                                            <hr>
-                                        <div class="control-group">
-                                            <div class="controls">
-                                                <button type="submit" name="submit"class="btn">Add Message</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                            </div>
-                        </div>
-
-                        
-                        
-                    </div><!--/.content-->
-                </div>
+                    <!--/.span3-->
                     <!--/.span9-->
                 </div>
             </div>
@@ -129,7 +153,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
         </div>
 <div class="footer">
             <div class="container">
-                <b class="copyright">&copy;2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan</b>All rights reserved.
+                <b class="copyright">&copy; 2018 Library Management System </b>All rights reserved.
             </div>
         </div>
         
@@ -141,26 +165,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
         <script src="scripts/flot/jquery.flot.resize.js" type="text/javascript"></script>
         <script src="scripts/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="scripts/common.js" type="text/javascript"></script>
-
-<?php
-if(isset($_POST['submit']))
-{
-    $rollno=$_POST['RollNo'];
-    $message=$_POST['Message'];
-   $Sender=$_POST['Sender'];
-
-$sql1="insert into LMS.message (RollNo,Sender,Msg,Date,Time) values ('$rollno','$Sender','$message',curdate(),curtime())";
-
-if($conn->query($sql1) === TRUE){
-echo "<script type='text/javascript'>alert('Success')</script>";
-}
-else
-{//echo $conn->error;
-echo "<script type='text/javascript'>alert('Error')</script>";
-}
-    
-}
-?>
+      
     </body>
 
 </html>

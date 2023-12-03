@@ -3,7 +3,7 @@ require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
+if ($_SESSION['RollNo']== 'admin' ) {
     ?>
 
 <!DOCTYPE html>
@@ -52,7 +52,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
                 <div class="row">
                     <div class="span3">
                         <div class="sidebar">
-                          <ul class="widget widget-menu unstyled">
+                             <ul class="widget widget-menu unstyled">
                                 <li class="active"><a href="index.php"><i class="menu-icon icon-home"></i>Home
                                 </a></li>
                                 <li class="active"><a href="../qr/index.php"><i class="menu-icon icon-home"></i>Visit Hours 
@@ -77,51 +77,25 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
                         </div>
                         <!--/.sidebar-->
                     </div>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="span3">
+                        <center>
+                            <a href="issue_requests.php" class="btn btn-info" ><image width="100px" src="images/book2.png"></image><p>Issue Requests</p></a>
+                        </center>
+                    </div>
+                    <div class="span3">
+                        <center>
+                            <a href="renew_requests.php" class="btn btn-info"><image width="100px" src="images/book3.png"></image><p>Renew Request</p></a>
+                        </center>
+                    </div> 
+                    <div class="span3">
+                        <center>
+                            <a href="return_requests.php" class="btn btn-info"><image width="100px" src="images/book4.png"></image><p>Return Requests</p></a>
+                        </center>
+                    </div>
                     <!--/.span3-->
-
-                    <div class="span9">
-                    <div class="content">
-
-                        <div class="module">
-                            <div class="module-head">
-                                <h3>Send a message</h3>
-                            </div>
-                            <div class="module-body">
-
-                                    <br >
-
-                                    <form class="form-horizontal row-fluid" action="message.php" method="post">
-                                        <div class="control-group">
-                                            <label class="control-label" for="Rollno"><b>Receiver ID No:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="RollNo" name="RollNo" placeholder="Id No" class="span8" required >
-                                            </div>
-                                        </div>
-                                         <div class="control-group">
-                                            <label class="control-label" for="Sender"><b>Sender's Name:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Sender" name="Sender" placeholder="Input your name" class="span8" required>
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" for="Message"><b>Message:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Message" name="Message" placeholder="Enter Message" class="span8" required>
-                                            </div>
-                                            <hr>
-                                        <div class="control-group">
-                                            <div class="controls">
-                                                <button type="submit" name="submit"class="btn">Add Message</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                            </div>
-                        </div>
-
-                        
-                        
-                    </div><!--/.content-->
-                </div>
                     <!--/.span9-->
                 </div>
             </div>
@@ -129,7 +103,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
         </div>
 <div class="footer">
             <div class="container">
-                <b class="copyright">&copy;2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan</b>All rights reserved.
+                <b class="copyright">&copy;2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan </b>All rights reserved.
             </div>
         </div>
         
@@ -141,26 +115,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
         <script src="scripts/flot/jquery.flot.resize.js" type="text/javascript"></script>
         <script src="scripts/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="scripts/common.js" type="text/javascript"></script>
-
-<?php
-if(isset($_POST['submit']))
-{
-    $rollno=$_POST['RollNo'];
-    $message=$_POST['Message'];
-   $Sender=$_POST['Sender'];
-
-$sql1="insert into LMS.message (RollNo,Sender,Msg,Date,Time) values ('$rollno','$Sender','$message',curdate(),curtime())";
-
-if($conn->query($sql1) === TRUE){
-echo "<script type='text/javascript'>alert('Success')</script>";
-}
-else
-{//echo $conn->error;
-echo "<script type='text/javascript'>alert('Error')</script>";
-}
-    
-}
-?>
+      
     </body>
 
 </html>

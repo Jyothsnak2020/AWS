@@ -1,6 +1,5 @@
 <?php
 require('dbconn.php');
-
 ?>
 
 <?php 
@@ -53,7 +52,7 @@ if ($_SESSION['RollNo']== 'admin' ) {
                 <div class="row">
                     <div class="span3">
                         <div class="sidebar">
-                           <ul class="widget widget-menu unstyled">
+                          <ul class="widget widget-menu unstyled">
                                 <li class="active"><a href="index.php"><i class="menu-icon icon-home"></i>Home
                                 </a></li>
                                 <li class="active"><a href="../qr/index.php"><i class="menu-icon icon-home"></i>Visit Hours 
@@ -78,29 +77,26 @@ if ($_SESSION['RollNo']== 'admin' ) {
                         </div>
                         <!--/.sidebar-->
                     </div>
+                    <!--/.span3-->
 
                     <div class="span9">
-                        <!--  <form class="form-horizontal row-fluid" action="history.php" method="post">
+                        <form class="form-horizontal row-fluid" action="current.php" method="post">
                                         <div class="control-group">
                                             <label class="control-label" for="Search"><b>Search:</b></label>
                                             <div class="controls">
-                                                <input type="text" id="ok" name="ok" placeholder="Enter Name/ID of Book" class="span8" required>
+                                                <input type="text" id="title" name="title" placeholder="Enter ID No of Student/Book Name/Book Id." class="span8" required>
                                                 <button type="submit" name="submit"class="btn">Search</button>
                                             </div>
                                         </div>
                                     </form>
-                 -->
                                     <br>
                                     <?php
                                     if(isset($_POST['submit']))
-                                        {$s=$_POST['ok'];
-
-                                             $sql="SELECT * FROM LMS.tbl WHERE BookId='$s' OR Textbook LIKE '%$s%'";
-                                    // $sql = "SELECT * FROM tbl ORDER BY BookID DESC WHERE BookId ='title' LIKE '%$s%'" ;
+                                        {$s=$_POST['title'];
+                                        $sql="select record.BookId,id,RollNo,Textbook,Due_Date,Date_of_Issue,datediff(curdate(),Due_Date) as x from LMS.record,LMS.book where (Date_of_Issue and Date_of_Return  and book.Bookid = record.BookId) and (RollNo='$s' or record.BookId='$s' or Textbook like '%$s%')";
                                         }
                                     else
-                                        $sql="SELECT * FROM tbl ORDER BY BookID DESC";
-
+                                        $sql="select record.BookId,id,RollNo,Textbook,Date_of_Return,Date_of_Issue,datediff(curdate(),Due_Date) as x from LMS.record,LMS.book where Date_of_Issue and Date_of_Return and book.Bookid = record.BookId";
                                     $result=$conn->query($sql);
                                     $rowcount=mysqli_num_rows($result);
 
@@ -111,58 +107,83 @@ if ($_SESSION['RollNo']== 'admin' ) {
 
                                     
                                     ?>
-                                      <form action="excelhistory.php" method="post" style="float: left;">
+                                      <form action="excel2.php" method="post" style="float: left;">
                                     <input type="submit" name="export_excel" class="btn btn-success" value="Export to Excel">
                                 </form>
 
+                                <form action="dellall.php" method="post">
+                                        <button onclick="return myFunction2()" name="delete" type="submit" class="btn btn-primary">Delete All</button>
+                                                    <script>
+                                                    function myFunction2() {
+                                                   return confirm('Are you sure you want to delete all the records?');}
+                                                    </script>
 
-                                               
-                                           
+                                     
+                                          
                         <table class="table" id = "tables">
                                   <thead>
                                     <tr>
-                                      <th>Deletion id</th>
-                                      <th>User</th>
-                                      <th>Name</th>
-                                      <th>Date</th>
-                                      
-                                      
+                                      <th>Borrower's ID</th> 
+                                    
+                                      <th>Book id</th>
+                                      <th>Book name</th>
+                                      <th>Issue Date</th>
+                                      <th>Return date</th>
+                                      <th>Dues</th>
+                                      <th>Delete</th>
+                                     
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    <?php
+
+                                <?php
+
                             
-                            // $result=$conn->query($sql1);
+
+                            //$result=$conn->query($sql);
                             while($row=$result->fetch_assoc())
-                            {      
-                              
+                            {
+                               $id = $row ['id'];
+                                $rollno=$row['RollNo'];
                                 $bookid=$row['BookId'];
-                                $name=$row['deletor'];
-                                $item=$row['item'];
-                                $avail=$row['date'];
-                            
-                           
+                                $name=$row['Textbook'];
+                                $issuedate=$row['Date_of_Issue'];
+                                $duedate=$row['Date_of_Return'];
+                                $dues=$row['x'];
+                                 $dues=$row['x'];
                             ?>
+
                                     <tr>
+                                      <td><?php echo strtoupper($rollno) ?></td>
+                                    
                                       <td><?php echo $bookid ?></td>
                                       <td><?php echo $name ?></td>
-                                      <td><?php echo $item?></td>
-                                      <td><?php echo $avail ?></td>
-                                        <!-- <td><center>
-                                            <a href="bookdetails.php?id=<?php echo $bookid; ?>" class="btn btn-primary">Details</a>
-                                            <a href="edit_book_details.php?id=<?php echo $bookid; ?>" class="btn btn-success">Edit</a>
-                                           <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
-                                               <input type="hidden" name="name" value="<?php echo $bookid ?>">
-                                               <input type="hidden" name="item" value="all book">
-                                               <input type="hidden" name="deletor" value="admin">
-                                           </form>  
-                                        </center></td> -->
+                                      <td><?php echo $issuedate ?></td>
+                                      <td><?php echo $duedate ?></td>
+                                      <td><?php if($dues > 0)
+                                                  echo "<font color='red'>".$dues."</font>";
+                                                else
+                                                  echo "<font color='green'>0</font>";
+                                              ?>
+                                              </form>
+
+                                        <td><form action="delcu.php" method="post" >
+                                           <button onclick="return myFunction2()" name="delete" type="submit" class="btn btn-primary">Delete</button>
+                                                    <script>
+                                                    function myFunction2() {
+                                                   return confirm('Are you sure you want to delete this records?');}
+                                                    </script>
+                                    
+                                            </form>
                                        
+                                     </td>
+                                     
                                     </tr>
-                               <?php }} ?>
-                               </tbody>
+                            <?php }} ?>
+                                    </tbody>
                                 </table>
-                            </div>
+                    </div>
+
                     <!--/.span9-->
                 </div>
             </div>
@@ -170,7 +191,7 @@ if ($_SESSION['RollNo']== 'admin' ) {
         </div>
 <div class="footer">
             <div class="container">
-                <b class="copyright">&copy; 2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan </b>All rights reserved.
+                <b class="copyright">&copy; 2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan</b>All rights reserved.
             </div>
         </div>
         

@@ -5,11 +5,21 @@ $con = connection();
 
 
  if (isset($_POST['delete'])) {
- // $bookid = $_POST['bookid'];
+       $zoro = $_POST['zoro'];
+       $nami = $_POST['nami'];
+ $BookId = $_POST['BookId'];
 $sql2 = "DELETE FROM `record`";
 $con->query($sql2) or die($con->error);
 
-       echo "<script type='text/javascript'>alert('are you sure?')</script>";                   
-  	  echo header("Location: ../staff/current.php")  ;
+
+
+
+
+
+//  $sql3 = " INSERT INTO `tbl`(`deletor`, `item`) VALUES ('$zoro','$nami')";
+// $con->query($sql3) or die($con->error);
+
+                        
+  	  echo header("Location: ../admin/current.php")  ;
  }
 ?>

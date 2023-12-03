@@ -1,8 +1,12 @@
 ﻿<?php
 require('dbconn.php');
 ?>
+
 <?php 
-if ($_SESSION['RollNo']) {
+
+
+if ($_SESSION['RollNo'] == 'admin' ) {
+
     ?>
 
 <!DOCTYPE html>
@@ -54,12 +58,21 @@ if ($_SESSION['RollNo']) {
                             <ul class="widget widget-menu unstyled">
                                 <li class="active"><a href="index.php"><i class="menu-icon icon-home"></i>Home
                                 </a></li>
+                                <li class="active"><a href="../qr/index.php"><i class="menu-icon icon-home"></i>Visit Hours 
+                                </a></li>
                                  <li><a href="message.php"><i class="menu-icon icon-inbox"></i>Messages</a>
                                 </li>
+                                <li><a href="recieve.php"><i class="menu-icon icon-inbox"></i>Recieve Message</a>
+                                </li>
+                                <li><a href="student.php"><i class="menu-icon icon-user"></i>Manage Students </a>
+                                </li>
                                 <li><a href="book.php"><i class="menu-icon icon-book"></i>All Books </a></li>
-                                <li><a href="history.php"><i class="menu-icon icon-tasks"></i>Previously Borrowed Books </a></li>
-                                <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Recommend Books </a></li> -->
+                                <li><a href="addbook.php"><i class="menu-icon icon-edit"></i>Add Books </a></li>
+                                <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
+                                <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
+                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
+                                <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
                                 <li><a href="logout.php"><i class="menu-icon icon-signout"></i>Logout </a></li>
@@ -68,41 +81,44 @@ if ($_SESSION['RollNo']) {
                         <!--/.sidebar-->
                     </div>
                     <!--/.span3-->
+                    
                     <div class="span9">
-                    	<center>
-                           	<div class="card" style="width: 50%;"> 
-                    			<img class="card-img-top" src="images/profile2.png" alt="Card image cap">
-                    			<div class="card-body">
+                        <center>
+                            <div class="card" style="width: 50%;"> 
+                                <img class="card-img-top" src="images/profile2.png" alt="Card image cap">
+                                <div class="card-body">
 
                                 <?php
                                 $rollno = $_SESSION['RollNo'];
                                 $sql="select * from LMS.user where RollNo='$rollno'";
                                 $result=$conn->query($sql);
                                 $row=$result->fetch_assoc();
+                              
 
                                 $name=$row['Name'];
                                 $category=$row['Category'];
                                 $email=$row['EmailId'];
                                 $mobno=$row['MobNo'];
                                 ?>    
-                    				<i>
-                    				<h1 class="card-title"><center><?php echo $name ?></center></h1>
-                    				<br>
-                    				<p><b>Email ID: </b><?php echo $email ?></p>
-                    				<br>
-                    				<p><b>ID No: </B><?php echo $rollno ?></p>
-                    				<br>
-                    				<p><b>Category: </b><?php echo $category ?></p>
-                    				<br>
-                    				<p><b>Mobile number: </b><?php echo $mobno ?></p>
-                    				</b>
+                                    <i>
+                                    <h1 class="card-title"><center><?php echo $name ?></center></h1>
+                                    <br>
+                                    <p><b>Email ID: </b><?php echo $email ?></p>
+                                    <br>
+                                    <p><b>Mobile number: </b><?php echo $mobno ?></p>
+                                    </b>
                                 </i>
 
-                    			</div>
-                    		</div>
-                            <br>
-                            <a href="edit_student_details.php" class="btn btn-primary">Edit Details</a>    
-      					</center>              	
+                                </div>
+                            </div>
+                        <br>
+                        <a href="edit_admin_details.php" class="btn btn-primary">Edit Details</a>
+                        <a href="addadmin.php" class="btn btn-primary">Add admin</a>
+
+                        <a href="addstaff.php" class="btn btn-primary">Add Library staff/Librarian</a>
+                        <a href="../staff/index.php" class="btn btn-primary">Go to staff domain</a>
+                           <a href="../librarian/index.php" class="btn btn-primary">Go to librarian domain</a>
+                        </center>               
                     </div>
                     
                     <!--/.span9-->
@@ -128,6 +144,8 @@ if ($_SESSION['RollNo']) {
     </body>
 
 </html>
+
+
 <?php }
 else {
     echo "<script type='text/javascript'>alert('Access Denied!!!')</script>";

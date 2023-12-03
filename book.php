@@ -4,24 +4,7 @@ require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo'] == false) {
-
- echo header("Location:nicetry.php");
-}
-$rollno = $_SESSION['RollNo'];
-                                $sql="select * from LMS.user where RollNo='$rollno'";
-                                $result=$conn->query($sql);
-                                $row=$result->fetch_assoc();
-                                
-                                $type = $row['Type'];
-
-if ($type == 'Student') {
-    
-
-echo header("Location:../student/index.php");
-
-}
-if ($_SESSION['RollNo']!== 'librarian') {
+if ($_SESSION['RollNo']== 'admin' ) {
     ?>
 
 <!DOCTYPE html>
@@ -86,7 +69,7 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                 <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
+                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
                                 <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
@@ -101,7 +84,7 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                         <div class="control-group">
                                             <label class="control-label" for="Search"><b>Search:</b></label>
                                             <div class="controls">
-                                                <input type="text" id="Textbook" name="Textbook" placeholder="Enter Section And Book Name" class="span8" required>
+                                                <input type="text" id="Textbook" name="Textbook" placeholder="Enter Book Section , Book Name, or book Status" class="span8" required>
                                                 <button type="submit" name="submit"class="btn">Search</button>
                                             </div>
                                         </div>
@@ -110,11 +93,11 @@ if ($_SESSION['RollNo']!== 'librarian') {
 
                                      <form class="form-horizontal row-fluid" action="lab.php" method="post">
                                         <div class="control-group">
-                                            <label class="control-label" for="Search"><b>Section Report:</b></label>
+                                            <label class="control-label" for="Search"><b>Select Section:</b></label>
                                             <div class="controls">
                                                <select name = "Section" tabindex="1" value="SC" data-placeholder="" class="span3" required style="float:left;">
                                                   <!--   <option value="<?php echo $status?>"><?php echo $status ?> </option> -->
-                                                  <option value=""></option>
+                                                  <option value="" style="text-align: center;"></option>
                                                     <option value="General Reference">General Reference</option>
                                                     <option value="Reference">Reference</option>
                                                     <option value="Filipiniana">Filipiniana</option>
@@ -126,15 +109,17 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                                       <option value="Computer Internet Area">Computer Internet Area</option>
                                                 </select>
                                                  <label class="control-label" for="Search"><b>Select Status:</b></label>
+                                            <div class="controls">
                                                 <select name = "Status" tabindex="1" value="SC" data-placeholder="Select Status" class="span2">
                                                   <!--   <option value="<?php echo $status?>"><?php echo $status ?> </option> -->
-                                                  <option value=""></option>
+                                                <option value="" style="text-align: center;"></option>
                                                     <option value="GOOD">GOOD</option>
                                                     <option value="DAMAGE">DAMAGE</option>
                                                     <option value="DILAPIDATED">DILAPIDATED</option>
                                                     
                                                 </select>
                                                 <button type="submit" name="submit"class="btn">Generate Report</button>
+                                               
                                             </div>
                                         </div>
                                     </form>
@@ -143,7 +128,7 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                     if(isset($_POST['submit']))
                                         {$s=$_POST['Textbook'];
 
-                                            $sql="select * from LMS.book where Section like '%$s%' OR Textbook like '%$s%'";
+                                            $sql="select * from LMS.book where Section like '%$s%' OR Textbook like '%$s%' OR Status like '%$s%'";
                                     // $sql = "select * from LMS.book where BookId = '$s' or Textbook like '%s%' ";
                                      // $name=$row['Textbook'];
                                  // $rs = $conn->query($sql);
@@ -166,15 +151,17 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                 </form>
                                     
 
-                                
+                                 <form action="delallb.php" method="post">
+                                     
                                            
                         <table class="table" id = "tables">
                                   <thead>
                                     <tr>
-                                      <th>Book id</th>
+                                      <th>Book identification Number</th>
                                        <th>Section</th>
                                       <th>Book name</th>
                                       <th>Availability</th>
+                                     
                                       <th>Actions</th>
                                       
                                     </tr>
@@ -187,25 +174,31 @@ if ($_SESSION['RollNo']!== 'librarian') {
                             {      
                               
                                 $bookid=$row['BookId'];
+                               
                                 $section = $row['Section'];
                                 $name=$row['Textbook'];
                                 $avail=$row['Availability'];
+                               
                             
                            
                             ?>
                                     <tr>
-                                      <td><?php echo $bookid ?></td>
+                                    <td><?php echo $bookid ?></td>
                                        <td><?php echo $section ?></td>
                                       <td><?php echo $name ?></td>
                                       <td><b><?php echo $avail ?></b></td>
+                                       
                                         <td><center>
                                             <a href="bookdetails.php?id=<?php echo $bookid; ?>" class="btn btn-primary">Details</a>
                                             <a href="edit_book_details.php?id=<?php echo $bookid; ?>" class="btn btn-success">Edit</a>
+                                             
+                                             
+
                                            <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
                                                <input type="hidden" name="name" value="<?php echo $bookid ?>">
                                                <input type="hidden" name="item" value="all book">
                                                <input type="hidden" name="deletor" value="admin">
-                                          
+                                           </form>  
                                         </center></td>
                                        
                                     </tr>

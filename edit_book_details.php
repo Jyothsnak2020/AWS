@@ -1,9 +1,10 @@
 <?php
+ob_start();
 require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo']== 'admin') {
+if ($_SESSION['RollNo']) {
     ?>
 
 <!DOCTYPE html>
@@ -68,7 +69,6 @@ if ($_SESSION['RollNo']== 'admin') {
                                 <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
                                 <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
@@ -78,35 +78,63 @@ if ($_SESSION['RollNo']== 'admin') {
                         <!--/.sidebar-->
                     </div>
                     <!--/.span3-->
-                    <!--/.span9-->
+                    
                     <div class="span9">
-                    <div class="content">
-
                         <div class="module">
                             <div class="module-head">
-                                <h3>Add Book</h3>
+                                <h3>Update Book Details</h3>
                             </div>
                             <div class="module-body">
 
+                                <?php
+                                    $bookid = $_GET['id'];
+                                    $sql = "select * from LMS.book where Bookid='$bookid'";
                                     
-                                    <br >
+                                    $result=$conn->query($sql);
+                                    $row=$result->fetch_assoc();
+                                   
+                                $section=$row['Section'];
+                           
+                                 $subject=$row['Subject'];
+                                $name=$row['Textbook'];
+                                $vol=$row['Volume'];
+                                $year=$row['Year'];
+                                $avail=$row['Availability'];
+                                 $author=$row['Author'];
+                                  $isbn=$row['ISBN'];
+                                $status=$row['Status']; 
+                            
 
-                                    <form class="form-horizontal row-fluid" action="addbook.php" method="post">
-                                        <div class="control-group">
+                                ?>
+                               
+
+                                    <br >
+                                    <form class="form-horizontal row-fluid" action="edit_book_details.php?id=<?php echo $bookid ?>" method="post">
+                                           
+                                      <div class="control-group">
+
                                             <label class="control-label" for="Section"><b>Book Section:</b></label>
                                             <div class="controls">
                                                 <select name = "Section" tabindex="1" value="SC" data-placeholder="" class="span8" required>
                                                   <!--   <option value="<?php echo $status?>"><?php echo $status ?> </option> -->
                                                   <option value=""></option>
-                                                    <option value="General Reference">General Reference</option>
-                                                    <option value="Reference">Reference</option>
-                                                    <option value="Filipiniana">Filipiniana</option>
-                                                    <option class="Periodical">Periodical</option>
-                                                    <option value="Reserved Books"> Reserved Books</option>
-                                                    <option value="Graduate Studies">Graduate Studies</option>
-                                                    <option value="Special Collections">Special Collection</option>
-                                                    <option value="Rare Book"> Rare Book</option>
-                                                    <option value="Computer Internet Area">Computer Internet Area</option>
+                                                    <option value="General Reference"<?php echo($row['Section']=="General Reference")? 'selected':''; ?>>General Reference</option>
+
+                                                    <option value="Reference"<?php echo($row['Section']=="Reference")? 'selected':''; ?>>Reference</option>
+
+                                                    <option value="Filipiniana" <?php echo($row['Section']=="Filipiniana")? 'selected':''; ?>>Filipiniana</option>
+
+                                                    <option class="Periodical" <?php echo($row['Section']=="Periodical")? 'selected':''; ?>>Periodical</option>
+
+                                                    <option value="Reserved Books"<?php echo($row['Section']=="Reserved Books")? 'selected':''; ?>> Reserved Books</option>
+
+                                                    <option value="Graduate Studies" <?php echo($row['Section']=="Graduate Studies")? 'selected':''; ?>>Graduate Studies</option>
+
+                                                    <option value="Special Collections" <?php echo($row['Section']=="Special Collections")? 'selected':''; ?>>Special Collection</option>
+
+                                                    <option value="Rare Book"  <?php echo($row['Section']=="Rare Book")? 'selected':''; ?>> Rare Book</option>
+
+                                                    <option value="Computer Internet Area"  <?php echo($row['Section']=="Computer Internet Area")? 'selected':''; ?>>Computer Internet Area</option>
                                                     
                                                 </select>
                                             </div>
@@ -114,84 +142,86 @@ if ($_SESSION['RollNo']== 'admin') {
                                         <div class="control-group">
                                             <label class="control-label" for="Subject"><b>Subject</b></label>
                                             <div class="controls">
-                                                <input type="text" id="Subject" name="Subject" placeholder="Subject" class="span8" required>
+                                                <input type="text" id="Subject" name="Subject" placeholder="Subject" class="span8" required value="<?php echo $subject?>">
                                             </div>
                                         </div>
                                          <div class="control-group">
                                             <label class="control-label" for="book"><b>Textbook</b></label>
                                             <div class="controls">
-                                                <input type="text" id="book" name="book" placeholder="Textbook" class="span8" required>
+                                                <input type="text" id="book" name="book" placeholder="Textbook" class="span8" required value="<?php echo $name?>">
                                             </div>
                                         </div>
-                                          <div class="control-group">
-                                            <label class="control-label" for="Title"><b>Volume</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Title" name="Title" placeholder="Volumes" class="span8" required>
-                                            </div>
-                                        </div>
+                                        
                                         <div class="control-group">
                                             <label class="control-label" for="Copyright"><b>Copyright Year</b></label>
                                             <div class="controls">
-                                                <input type="text" id="Copyright" name="Copyright" placeholder="Copyright" class="span8" required>
+                                                <input type="text" id="Copyright" name="Copyright" placeholder="Copyright" class="span8" required value="<?php echo $year?>">
                                             </div>
                                         </div>
-                                      
+                                        <div class="control-group">
+                                            <label class="control-label" for="Title"><b>Volume</b></label>
+                                            <div class="controls">
+                                                <input type="text" id="Title" name="Title" placeholder="Volumes" class="span8" required value="<?php echo $vol?>">
+                                            </div>
+                                        </div>
                                         <div class="control-group">
                                             <label class="control-label" for="Availability"><b>Number of Copies</b></label>
                                             <div class="controls">
-                                                <input type="text" id="availability" name="availability" placeholder="Number of Copies" class="span8" required>
-                                            </div>
+                                                <input type="text" id="availability" name="availability" placeholder="Number of Copies" class="span8" required value="<?php echo $avail?>">
+                                            </div >
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label" for="Author"><b>Author</b></label>
                                             <div class="controls">
-                                                <input type="text" id="Author" name="Author" placeholder="Author" class="span8" required>
+                                                <input type="text" id="Author" name="Author" placeholder="Author" class="span8" required value="<?php echo $author?>">
                                             </div>
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label" for="ISBN"><b>ISBN</b></label>
                                             <div class="controls">
-                                                <input type="text" id="ISBN" name="ISBN" placeholder="ISBN" class="span8" required>
-                                            </div>
+                                                <input type="text" id="ISBN" name="ISBN" placeholder="ISBN" class="span8" required value="<?php echo $isbn?>">
+                                            </div >
                                         </div>
                                          <div class="control-group">
                                             <label class="control-label" for="status"><b>Book Status:</b></label>
                                             <div class="controls">
-                                                 <select name = "status" tabindex="1" value="SC" data-placeholder="Select Status" class="span8" required>
+                                               
+                                              <select name = "status" tabindex="1" value="SC" data-placeholder="Select Status" class="span6">
                                                   <!--   <option value="<?php echo $status?>"><?php echo $status ?> </option> -->
                                                   <option value=""></option>
-                                                    <option value="GOOD">GOOD</option>
-                                                    <option value="DAMAGE">DAMAGE</option>
-                                                    <option value="DILAPIDATED">DILAPIDATED</option>
+
+                                                    <option value="GOOD" <?php echo($row['Status']=="GOOD")? 'selected':''; ?>>GOOD</option>
+
+                                                    <option value="DAMAGE" <?php echo($row['Status']=="DAMAGE")? 'selected':''; ?>>DAMAGE</option>
+
+                                                    <option value="DILAPIDATED" <?php echo($row['Status']=="DILAPIDATED")? 'selected':''; ?>>DILAPIDATED</option>
+                                                    
                                                 </select>
-                                                
                                             </div>
                                     </div>
 
+
                                         <div class="control-group">
                                             <div class="controls">
-                                                <button type="submit" name="submit"class="btn">Add Book</button>
+                                                <button type="submit" name="submit"class="btn">Update Details</button>
                                             </div>
                                         </div>
-                                    </form>
-                            </div>
-                        </div>
 
-                        
-                        
-                    </div><!--/.content-->
-                </div>
+                                       
+                                    </form> 
 
+                                    </div>   
+                                    </div>          
+                    </div>
+                    
+                    <!--/.span9-->
                 </div>
             </div>
             <!--/.container-->
-
         </div>
-
-
 <div class="footer">
             <div class="container">
-                <b class="copyright">&copy; 2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan </b>All rights reserved.
+                <b class="copyright">&copy; 2018 Library Management System </b>All rights reserved.
             </div>
         </div>
         
@@ -204,59 +234,51 @@ if ($_SESSION['RollNo']== 'admin') {
         <script src="scripts/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="scripts/common.js" type="text/javascript"></script>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <?php
 if(isset($_POST['submit']))
 {
- //    $title=$_POST['title'];
- //    $author=$_POST['author'];
- //   $section =$_POST['section'];
- //    $publisher=$_POST['publisher'];
- //    $year=$_POST['year'];
- //    $availability=$_POST['availability'];
- //    $aut = $_POST['aut'];
- //    $isbn = $_POST['isbn'];
- //    $status=$_POST['status'];
-
-
- // echo $sql1="insert into LMS.book (Section,Subject,Textbook,Volume,Year,Availability,Author,ISBN,Status) values ('$section',$title','$author','$publisher','$year','$availability','$aut','$isbn','$status')";
-
-    // INSERT INTO `book`(`BookId`, `Section`, `Subject`, `Textbook`, `Volume`, `Year`, `Availability`, `Author`, `ISBN`, `Status`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8],[value-9],[value-10])
-
-$Section = $_POST['Section'];
+     $bookid = $_GET['id'];
+   $Section = $_POST['Section'];
 $Subject = $_POST['Subject'];
 $book = $_POST['book'];
-$Title = $_POST['Title'];
 $Copyright = $_POST['Copyright'];
-
+$Title = $_POST['Title'];
 $availability = $_POST['availability'];
 $Author = $_POST['Author'];
 $ISBN = $_POST['ISBN'];
 $status = $_POST['status'];
 
 
- $sql1 = "INSERT INTO `book`( `Section`, `Subject`, `Textbook`, `Volume`, `Year`, `Availability`, `Author`, `ISBN`, `Status`) VALUES ('$Section','$Subject','$book','$Title','$Copyright','$availability','$Author','$ISBN','$status')";
+ // $sql1 = "INSERT INTO `book`( `Section`, `Subject`, `Textbook`, `Volume`, `Year`, `Availability`, `Author`, `ISBN`, `Status`) VALUES ('$Section','$Subject','$book','$Copyright','$Title','$availability','$Author','$ISBN','$status')";
 
-if($conn->query($sql1) === TRUE){
-$sql2="select max(BookId) as x from LMS.book";
-$result=$conn->query($sql2);
-$row=$result->fetch_assoc();
-// $x=$row['x'];        
-// $sql3="insert into LMS.author values ('$x','$author')";
-// $result=$conn->query($sql3);
-// if(!empty($author2))
-// { $sql4="insert into LMS.author values('$x','$author2')";
-//   $result=$conn->query($sql4);}
-// if(!empty($author3))
-// { $sql5="insert into LMS.author values('$x','$author3')";
-//   $result=$conn->query($sql5);}
+echo $sql1="update LMS.book set `Section`='$Section',`Subject`='$subject',`Textbook`='$book',`Volume`='$Title',`Year`='$Copyright',`Availability`='$availability',`Author`='$Author',`ISBN`='$ISBN',`Status`='$status' WHERE BookId='$bookid'";
 
+// $conn->query($sql1) or die($conn->error);
+
+if($conn->query($sql1) == TRUE){
 echo "<script type='text/javascript'>alert('Success')</script>";
+header( "Refresh:0.01; url=book.php", true, 303);
 }
 else
 {//echo $conn->error;
 echo "<script type='text/javascript'>alert('Error')</script>";
 }
-    
 }
 ?>
       

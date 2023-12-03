@@ -80,29 +80,63 @@ if ($_SESSION['RollNo']== 'admin' ) {
                     </div>
 
                     <div class="span9">
-                        <!--  <form class="form-horizontal row-fluid" action="history.php" method="post">
+                  <form class="form-horizontal row-fluid" action="book.php" method="post">
                                         <div class="control-group">
                                             <label class="control-label" for="Search"><b>Search:</b></label>
                                             <div class="controls">
-                                                <input type="text" id="ok" name="ok" placeholder="Enter Name/ID of Book" class="span8" required>
+                                                <input type="text" id="Textbook" name="Textbook" placeholder="Enter Book Section , Book Name, or book Status" class="span8" required>
                                                 <button type="submit" name="submit"class="btn">Search</button>
                                             </div>
                                         </div>
                                     </form>
-                 -->
+                                    <br>
+
+                                     <form class="form-horizontal row-fluid" action="lab.php" method="post">
+                                        <div class="control-group">
+                                            <label class="control-label" for="Search"><b>Select Section:</b></label>
+                                            <div class="controls">
+                                               <select name = "Section" tabindex="1" value="SC" data-placeholder="" class="span3" required style="float:left;">
+                                                  <!--   <option value="<?php echo $status?>"><?php echo $status ?> </option> -->
+                                                  <option value="" style="text-align: center;"></option>
+                                                    <option value="General Reference">General Reference</option>
+                                                    <option value="Reference">Reference</option>
+                                                    <option value="Filipiniana">Filipiniana</option>
+                                                    <option class="Periodical">Periodical</option>
+                                                    <option value="Reserved Books"> Reserved Books</option>
+                                                    <option value="Graduate Studies">Graduate Studies</option>
+                                                    <option value="Special Collections">Special Collection</option>
+                                                    <option value="Rare Book"> Rare Book</option>
+                                                      <option value="Computer Internet Area">Computer Internet Area</option>
+                                                </select>
+                                                 <label class="control-label" for="Search"><b>Select Status:</b></label>
+                                            <div class="controls">
+                                                <select name = "Status" tabindex="1" value="SC" data-placeholder="Select Status" class="span2">
+                                                  <!--   <option value="<?php echo $status?>"><?php echo $status ?> </option> -->
+                                                <option value="" style="text-align: center;"></option>
+                                                    <option value="GOOD">GOOD</option>
+                                                    <option value="DAMAGE">DAMAGE</option>
+                                                    <option value="DILAPIDATED">DILAPIDATED</option>
+                                                    
+                                                </select>
+                                                <button type="submit" name="submit"class="btn">Generate Report</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                     <br>
                                     <?php
                                     if(isset($_POST['submit']))
-                                        {$s=$_POST['ok'];
+                                        {$s=$_POST['Textbook'];
 
-                                             $sql="SELECT * FROM LMS.tbl WHERE BookId='$s' OR Textbook LIKE '%$s%'";
-                                    // $sql = "SELECT * FROM tbl ORDER BY BookID DESC WHERE BookId ='title' LIKE '%$s%'" ;
+                                            $sql="select * from LMS.book where Section like '%$s%' OR Textbook like '%$s%' OR Status like '%$s%'";
+                                    // $sql = "select * from LMS.book where BookId = '$s' or Textbook like '%s%' ";
+                                     // $name=$row['Textbook'];
+                                 // $rs = $conn->query($sql);
                                         }
                                     else
-                                        $sql="SELECT * FROM tbl ORDER BY BookID DESC";
+                                        $sql="SELECT * FROM book b INNER JOIN stat s ON b.stat_id = s.id INNER JOIN stock c ON b.BookId = c.id WHERE s.id = b.stat_id AND c.id = b.BookId";
 
                                     $result=$conn->query($sql);
-                                    $rowcount=mysqli_num_rows($result);
+                                    $rowcount = mysqli_num_rows($result);
 
                                     if(!($rowcount))
                                         echo "<br><center><h2><b><i>No Results</i></b></h2></center>";
@@ -111,52 +145,64 @@ if ($_SESSION['RollNo']== 'admin' ) {
 
                                     
                                     ?>
-                                      <form action="excelhistory.php" method="post" style="float: left;">
-                                    <input type="submit" name="export_excel" class="btn btn-success" value="Export to Excel">
+                                      <form action="excel.php" method="post" style="float: left;">
+                                    <input type="submit" name="export_excel" class="btn btn-success" value="Export All Books">
                                 </form>
+                                    
 
-
-                                               
+                                 <form action="delallb.php" method="post">
+                                     
                                            
                         <table class="table" id = "tables">
                                   <thead>
                                     <tr>
-                                      <th>Deletion id</th>
-                                      <th>User</th>
-                                      <th>Name</th>
-                                      <th>Date</th>
-                                      
+                                      <th>Book identification Number</th>
+                                       <th>Section</th>
+                                      <th>Book name</th>
+                                      <th>Availability   Quality</th>
+                                    
+                                     <th>stock left</th>
+                                     <th>status of stock left</th>
+                                      <th>Actions</th>
                                       
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <?php
                             
-                            // $result=$conn->query($sql1);
+                            //$result=$conn->query($sql);
                             while($row=$result->fetch_assoc())
                             {      
                               
                                 $bookid=$row['BookId'];
-                                $name=$row['deletor'];
-                                $item=$row['item'];
-                                $avail=$row['date'];
+                               $q=$row['status'];
+                                $section = $row['Section'];
+                                $name=$row['Textbook'];
+                                $avail=$row['Availability'];
+                                $s=$row['stock_left'];
+                                $p = $row['Status']
+                               
                             
                            
                             ?>
                                     <tr>
-                                      <td><?php echo $bookid ?></td>
+                                    <td><?php echo $bookid ?></td>
+                                       <td><?php echo $section ?></td>
                                       <td><?php echo $name ?></td>
-                                      <td><?php echo $item?></td>
-                                      <td><?php echo $avail ?></td>
-                                        <!-- <td><center>
+                                      <td><b><?php echo $avail ?> <?php echo $p ?></b></td>
+                                       
+                                      <td><?php echo $s ?></td>
+                                         <td><?php echo $q ?></td>
+                                        <td><center>
                                             <a href="bookdetails.php?id=<?php echo $bookid; ?>" class="btn btn-primary">Details</a>
-                                            <a href="edit_book_details.php?id=<?php echo $bookid; ?>" class="btn btn-success">Edit</a>
+                                            <a href="modify1.php?id=<?php echo $bookid; ?>" class="btn btn-success">Edit</a>
+                                            
                                            <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
                                                <input type="hidden" name="name" value="<?php echo $bookid ?>">
                                                <input type="hidden" name="item" value="all book">
                                                <input type="hidden" name="deletor" value="admin">
                                            </form>  
-                                        </center></td> -->
+                                        </center></td>
                                        
                                     </tr>
                                <?php }} ?>

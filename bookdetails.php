@@ -4,24 +4,7 @@ require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo'] == false) {
-
- echo header("Location:nicetry.php");
-}
-$rollno = $_SESSION['RollNo'];
-                                $sql="select * from LMS.user where RollNo='$rollno'";
-                                $result=$conn->query($sql);
-                                $row=$result->fetch_assoc();
-                                
-                                $type = $row['Type'];
-
-if ($type == 'Student') {
-    
-
-echo header("Location:../student/index.php");
-
-}
-if ($_SESSION['RollNo']!== 'librarian') {
+if ($_SESSION['RollNo']== 'admin' ) {
     ?>
 
 <!DOCTYPE html>
@@ -86,7 +69,7 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                 <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
+                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
                                 <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
@@ -125,7 +108,7 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                  echo "<b>Subject:</b> ".$subject."<br><br>";
                                 echo "<b>Textbook:</b> ".$name."<br><br>";
                                 echo "<b>Volume:</b> ".$vol."<br><br>";
-                                echo "<b>Year:</b> ".$year."<br><br>";
+                                 echo "<b>Copyright Year:</b> ".$year."<br><br>";
                                   echo "<b>Availability:</b> ".$avail."<br><br>";
                                     echo "<b>Author:</b> ".$author."<br><br>";
                                       echo "<b>ISBN:</b> ".$isbn."<br><br>";
@@ -139,12 +122,31 @@ if ($_SESSION['RollNo']!== 'librarian') {
                         <!-- <a hre f="addbook.php"class="btn btn-primary">Go Back</a>  --> 
                         <a href="book.php" class="btn btn-primary">Go Back</a>
                         <br></br>
-                      
-                        </button>
+                        <form action="delete.php" method="post">
+                        <!-- <button type="submit" name="delete"class="btn btn-primary" onclick="myFunction()">Delete
+                            <script type="text/javascript">
+                                function myFunction(){
+                                    alert('Book deleted');
+
+
+                                }
+                            </script>
+                        </button> -->
+
+
+<button onclick="return myFunction2()" name="delete" type="submit" class="btn btn-primary">Delete</button>
+<script>
+function myFunction2() {
+return confirm('Are you sure you want to delete all book?'); } 
+</script>
+
+
+
+
                         <input type="hidden" name="deletor" value="admin">
                         <input type="hidden" name="item" value="<?php echo $name?>">
                         <input type="hidden" name="bookId" value="<?php echo $bookid?>"> 
-                        
+                        </form>
                                                    
                                </div>
                            </div>

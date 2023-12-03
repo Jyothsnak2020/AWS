@@ -3,24 +3,7 @@ require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo'] == false) {
-
- echo header("Location:nicetry.php");
-}
-$rollno = $_SESSION['RollNo'];
-                                $sql="select * from LMS.user where RollNo='$rollno'";
-                                $result=$conn->query($sql);
-                                $row=$result->fetch_assoc();
-                                
-                                $type = $row['Type'];
-
-if ($type == 'Student') {
-    
-
-echo header("Location:../student/index.php");
-
-}
-if ($type =$row['Type'] !== 'librarian') {
+if ($_SESSION['RollNo']== 'admin' ) {
     ?>
 
 <!DOCTYPE html>
@@ -86,7 +69,7 @@ if ($type =$row['Type'] !== 'librarian') {
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
                                  <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
-                                
+                                <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
                                 <li><a href="logout.php"><i class="menu-icon icon-signout"></i>Logout </a></li>
@@ -110,8 +93,9 @@ if ($type =$row['Type'] !== 'librarian') {
                                     <?php
                                     if(isset($_POST['submit']))
                                         {$s=$_POST['title'];
-                                            $sql="select record.BookId,id,RollNo,Textbook,Due_Date,Date_of_Issue,Date_of_Return,datediff(curdate(),Due_Date) as x from LMS.record,LMS.book where (Date_of_Issue and Date_of_Return is NULL and book.Bookid = record.BookId) and (RollNo='$s' or record.BookId='$s' or Textbook like '%$s%')";
-                                        }
+                                        $sql="select record.BookId,id,RollNo,Textbook,Due_Date,Date_of_Issue,Date_of_Return,datediff(curdate(),Due_Date) as x from LMS.record,LMS.book where (Date_of_Issue and Date_of_Return is NULL and book.Bookid = record.BookId) and (RollNo='$s' or record.BookId='$s' or Textbook like '%$s%')";}
+
+
                                     else
                                         $sql="select record.BookId,id,RollNo,Textbook,Due_Date,Date_of_Issue,Date_of_Return,datediff(curdate(),Due_Date) as x from LMS.record,LMS.book where Date_of_Issue and Date_of_Return is NULL and book.Bookid = record.BookId";
                                     $result=$conn->query($sql);
@@ -124,22 +108,41 @@ if ($type =$row['Type'] !== 'librarian') {
 
                                     
                                     ?>
-                                     <form action="excel1.php" method="post">
+                                      <form action="excel1.php" method="post" style="float: left;">
                                     <input type="submit" name="export_excel" class="btn btn-success" value="Export to Excel">
                                 </form>
+
+                                <form action="dellall.php" method="post">
+                                        <!-- <button type="submit" name="delete" class="btn btn-primary" onclick="myFunction2()">Delete All
+                                              <script>
+                                                    function myFunction2() {
+                                                   return confirm('Are you sure you want to delete all book?');
+                                                      }
+                                                    
+                                            </script>
+                                        </button> -->
+                                         <button onclick="return myFunction2()" name="delete" type="submit" class="btn btn-primary">Delete All</button>
+                                                    <script>
+                                                    function myFunction2() {
+                                                   return confirm('Are you sure you want to delete all Currently Issued Books even it is not return?');}
+                                                    </script>
+
+  </form>
+                                       
+                                          
                         <table class="table" id = "tables">
                                   <thead>
                                     <tr>
-                                      <th>Borrower's ID</th>  
-
+                                      <th>Borrower's ID</th> 
+                                   
                                       <th>Book id</th>
                                       <th>Book name</th>
                                       <th>Issue Date</th>
                                       <th>Due date</th>
                                       <th>Return Date</th>
                                       <th>Dues</th>
-                                  <!--     <th>Delete</th>
-                                      <th>Delete All</th> -->
+                                      <th>Delete</th>
+                                     
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -151,41 +154,45 @@ if ($type =$row['Type'] !== 'librarian') {
                             //$result=$conn->query($sql);
                             while($row=$result->fetch_assoc())
                             {
+                               $id = $row ['id'];
                                 $rollno=$row['RollNo'];
-                              
                                 $bookid=$row['BookId'];
                                 $name=$row['Textbook'];
                                 $issuedate=$row['Date_of_Issue'];
+                                $return = $row['Date_of_Return'];
                                 $duedate=$row['Due_Date'];
-                                $r= $row['Date_of_Return'];
                                 $dues=$row['x'];
-                            
+                                 $dues=$row['x'];
                             ?>
 
                                     <tr>
                                       <td><?php echo strtoupper($rollno) ?></td>
-                                    
+                                     
                                       <td><?php echo $bookid ?></td>
                                       <td><?php echo $name ?></td>
                                       <td><?php echo $issuedate ?></td>
                                       <td><?php echo $duedate ?></td>
-                                      <td><?php echo $r?></td>
+                                      <td><?php echo $return ?></td>
                                       <td><?php if($dues > 0)
                                                   echo "<font color='red'>".$dues."</font>";
                                                 else
                                                   echo "<font color='green'>0</font>";
-                                              ?></td>
+                                              ?>
+                                            
 
-                                     <!--    <td><form action="delcu.php" method="post" >
-                                          <button type="submit" name="delete">Delete</button>
-                                          <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
+                                        <td><form action="delcu.php" method="post" >
+                                           <button onclick="return myFunction2()" name="delete" type="submit" class="btn btn-primary">Delete</button>
+                                           <input type="hidden" name="" value="<?php echo $bookid ?>">
+                                                    <script>
+                                                    function myFunction2() {
+                                                   return confirm('Are you sure you want to delete this currently issued book?');}
+                                                    </script>
+
+                                        
                                             </form>
                                        
                                      </td>
-                                     <td>  <form action="dellall.php" method="post">
-                                        <button type="submit" name="delete">Delete All</button>
-                                          <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
-                                          </form> </td> -->
+                                     
                                     </tr>
                             <?php }} ?>
                                     </tbody>

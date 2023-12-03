@@ -4,7 +4,7 @@ require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo']== 'admin' ) {
+if ($_SESSION['RollNo']) {
     ?>
 
 <!DOCTYPE html>
@@ -69,7 +69,6 @@ if ($_SESSION['RollNo']== 'admin' ) {
                                 <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
                                 <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
@@ -80,38 +79,39 @@ if ($_SESSION['RollNo']== 'admin' ) {
                     </div>
 
                     <div class="span9">
-                        <!--  <form class="form-horizontal row-fluid" action="history.php" method="post">
+                  <form class="form-horizontal row-fluid" action="search.php" method="post">
                                         <div class="control-group">
                                             <label class="control-label" for="Search"><b>Search:</b></label>
                                             <div class="controls">
-                                                <input type="text" id="ok" name="ok" placeholder="Enter Name/ID of Book" class="span8" required>
-                                                <button type="submit" name="submit"class="btn">Search</button>
+                                                <input type="text" id="name" name="name" placeholder="Enter Name OR id" class="span8" required>
+                                                <button type="submit" name="atay"class="btn">Search</button>
                                             </div>
                                         </div>
                                     </form>
-                 -->
                                     <br>
                                     <?php
-                                    if(isset($_POST['submit']))
-                                        {$s=$_POST['ok'];
+                                    if(isset($_POST['atay']))
+                                        {$s=$_POST['name'];
+                                           
+                                    $sql = "SELECT * FROM LMS.tbl WHERE BookId = '$s' OR LIKE '%$s%'";
 
-                                             $sql="SELECT * FROM LMS.tbl WHERE BookId='$s' OR Textbook LIKE '%$s%'";
-                                    // $sql = "SELECT * FROM tbl ORDER BY BookID DESC WHERE BookId ='title' LIKE '%$s%'" ;
                                         }
                                     else
-                                        $sql="SELECT * FROM tbl ORDER BY BookID DESC";
+                                        
+                                    $sql = "SELECT * FROM LMS.tbl";
+                                    // $result=$conn->query($sql);
+                                $king=$conn->query($sql);
+                                    $rowcounts= mysqli_num_rows($king);
 
-                                    $result=$conn->query($sql);
-                                    $rowcount=mysqli_num_rows($result);
-
-                                    if(!($rowcount))
+                                    if(!($rowcounts)){
                                         echo "<br><center><h2><b><i>No Results</i></b></h2></center>";
+                                    }
                                     else
                                     {
 
                                     
                                     ?>
-                                      <form action="excelhistory.php" method="post" style="float: left;">
+                                      <form action="excel.php" method="post" style="float: left;">
                                     <input type="submit" name="export_excel" class="btn btn-success" value="Export to Excel">
                                 </form>
 
@@ -121,10 +121,10 @@ if ($_SESSION['RollNo']== 'admin' ) {
                         <table class="table" id = "tables">
                                   <thead>
                                     <tr>
-                                      <th>Deletion id</th>
-                                      <th>User</th>
+                                      <th>Book id</th>
+                                      <th>Book name</th>
                                       <th>Name</th>
-                                      <th>Date</th>
+                                      <th>Availability</th>
                                       
                                       
                                     </tr>
@@ -132,8 +132,8 @@ if ($_SESSION['RollNo']== 'admin' ) {
                                   <tbody>
                                     <?php
                             
-                            // $result=$conn->query($sql1);
-                            while($row=$result->fetch_assoc())
+                            //$result=$conn->query($sql);
+                            while($row=$king->fetch_assoc())
                             {      
                               
                                 $bookid=$row['BookId'];

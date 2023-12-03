@@ -1,6 +1,5 @@
 <?php
 require('dbconn.php');
-
 ?>
 
 <?php 
@@ -53,7 +52,7 @@ if ($_SESSION['RollNo']== 'admin' ) {
                 <div class="row">
                     <div class="span3">
                         <div class="sidebar">
-                           <ul class="widget widget-menu unstyled">
+                          <ul class="widget widget-menu unstyled">
                                 <li class="active"><a href="index.php"><i class="menu-icon icon-home"></i>Home
                                 </a></li>
                                 <li class="active"><a href="../qr/index.php"><i class="menu-icon icon-home"></i>Visit Hours 
@@ -69,7 +68,6 @@ if ($_SESSION['RollNo']== 'admin' ) {
                                 <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
                                 <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
@@ -78,28 +76,28 @@ if ($_SESSION['RollNo']== 'admin' ) {
                         </div>
                         <!--/.sidebar-->
                     </div>
+                    <!--/.span3-->
 
                     <div class="span9">
-                        <!--  <form class="form-horizontal row-fluid" action="history.php" method="post">
+                        <form class="form-horizontal row-fluid" action="current.php" method="post">
                                         <div class="control-group">
                                             <label class="control-label" for="Search"><b>Search:</b></label>
                                             <div class="controls">
-                                                <input type="text" id="ok" name="ok" placeholder="Enter Name/ID of Book" class="span8" required>
+                                                <input type="text" id="title" name="title" placeholder="Enter ID No of Student/Book Name/Book Id." class="span8" required>
                                                 <button type="submit" name="submit"class="btn">Search</button>
                                             </div>
                                         </div>
                                     </form>
-                 -->
                                     <br>
-                                    <?php
+                                   <?php
+                                    $rollno = $_SESSION['RollNo'];
                                     if(isset($_POST['submit']))
-                                        {$s=$_POST['ok'];
+                                        {$s=$_POST['title'];
+                                            $sql="select * from LMS.record,LMS.book where RollNo = '$rollno' and Date_of_Issue is NOT NULL and Date_of_Return is NOT NULL and book.Bookid = record.BookId and (record.BookId='$s' or Title like '%$s%')";
 
-                                             $sql="SELECT * FROM LMS.tbl WHERE BookId='$s' OR Textbook LIKE '%$s%'";
-                                    // $sql = "SELECT * FROM tbl ORDER BY BookID DESC WHERE BookId ='title' LIKE '%$s%'" ;
                                         }
                                     else
-                                        $sql="SELECT * FROM tbl ORDER BY BookID DESC";
+                                        $sql="select * from LMS.record,LMS.book where RollNo = '$rollno' and Date_of_Issue is NOT NULL and Date_of_Return is NOT NULL and book.Bookid = record.BookId";
 
                                     $result=$conn->query($sql);
                                     $rowcount=mysqli_num_rows($result);
@@ -109,60 +107,85 @@ if ($_SESSION['RollNo']== 'admin' ) {
                                     else
                                     {
 
-                                    
                                     ?>
-                                      <form action="excelhistory.php" method="post" style="float: left;">
+                                      <form action="excel1.php" method="post" style="float: left;">
                                     <input type="submit" name="export_excel" class="btn btn-success" value="Export to Excel">
                                 </form>
 
+                                <form action="dellall.php" method="post">
+                                        <button type="submit" name="delete" class="btn btn-primary" onclick="myFunction1()">Delete All
+                                            <script type="text/javascript">
+                                                function myFunction1(){
 
-                                               
-                                           
+                                                    alert('All Current Issue Book Deleted');
+                                                }
+                                            </script>
+                                        </button>
+                                          <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
+                                          </form>
                         <table class="table" id = "tables">
                                   <thead>
                                     <tr>
-                                      <th>Deletion id</th>
-                                      <th>User</th>
-                                      <th>Name</th>
-                                      <th>Date</th>
-                                      
-                                      
+                                      <th>ID No</th>  
+                                      <th>Book id</th>
+                                      <th>Book name</th>
+                                      <th>Issue Date</th>
+                                      <th>Due date</th>
+                                      <th>Dues</th>
+                                      <th>Delete</th>
+                                     
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    <?php
+
+                                <?php
+
                             
-                            // $result=$conn->query($sql1);
+
+                            //$result=$conn->query($sql);
                             while($row=$result->fetch_assoc())
-                            {      
-                              
+                            {
+                                $rollno=$row['RollNo'];
                                 $bookid=$row['BookId'];
-                                $name=$row['deletor'];
-                                $item=$row['item'];
-                                $avail=$row['date'];
+                                $name=$row['Textbook'];
+                                $issuedate=$row['Date_of_Issue'];
+                                $duedate=$row['Due_Date'];
+                                $dues=$row['x'];
                             
-                           
                             ?>
+
                                     <tr>
+                                      <td><?php echo strtoupper($rollno) ?></td>
                                       <td><?php echo $bookid ?></td>
                                       <td><?php echo $name ?></td>
-                                      <td><?php echo $item?></td>
-                                      <td><?php echo $avail ?></td>
-                                        <!-- <td><center>
-                                            <a href="bookdetails.php?id=<?php echo $bookid; ?>" class="btn btn-primary">Details</a>
-                                            <a href="edit_book_details.php?id=<?php echo $bookid; ?>" class="btn btn-success">Edit</a>
-                                           <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
-                                               <input type="hidden" name="name" value="<?php echo $bookid ?>">
-                                               <input type="hidden" name="item" value="all book">
-                                               <input type="hidden" name="deletor" value="admin">
-                                           </form>  
-                                        </center></td> -->
+                                      <td><?php echo $issuedate ?></td>
+                                      <td><?php echo $duedate ?></td>
+                                      <td><?php if($dues > 0)
+                                                  echo "<font color='red'>".$dues."</font>";
+                                                else
+                                                  echo "<font color='green'>0</font>";
+                                              ?>
+
+                                        <td><form action="delcu.php" method="post" >
+                                          <button type="submit" name="delete" class="btn btn-success" onclick="myFunction()">Delete
+                                            <script type="text/javascript">
+                                                function myFunction(){
+                                                    alert('Current Issue Book Deleted');
+                                                }
+
+                                            </script>
+                                          </button>
+                                          <input type="hidden" name="BookId" value="<?php echo $bookid ?>">
+                                            </form>
                                        
+                                     </td>
+                                     
                                     </tr>
-                               <?php }} ?>
-                               </tbody>
+                            <?php }} ?>
+                                    </tbody>
                                 </table>
-                            </div>
+                    </div>
+
                     <!--/.span9-->
                 </div>
             </div>
@@ -170,7 +193,7 @@ if ($_SESSION['RollNo']== 'admin' ) {
         </div>
 <div class="footer">
             <div class="container">
-                <b class="copyright">&copy; 2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan </b>All rights reserved.
+                <b class="copyright">&copy; 2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan</b>All rights reserved.
             </div>
         </div>
         

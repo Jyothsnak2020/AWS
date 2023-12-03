@@ -3,25 +3,9 @@ require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo'] == false) {
-
- echo header("Location:nicetry.php");
-}
-$rollno = $_SESSION['RollNo'];
-                                $sql="select * from LMS.user where RollNo='$rollno'";
-                                $result=$conn->query($sql);
-                                $row=$result->fetch_assoc();
-                                
-                                $type = $row['Type'];
-
-if ($type == 'Student') {
-    
-
-echo header("Location:../student/index.php");
-
-}
-if ($_SESSION['RollNo']!== 'librarian') {
+if ($_SESSION['RollNo']== 'admin' ) {
     ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -68,7 +52,7 @@ if ($_SESSION['RollNo']!== 'librarian') {
                 <div class="row">
                     <div class="span3">
                         <div class="sidebar">
-                            <ul class="widget widget-menu unstyled">
+                          <ul class="widget widget-menu unstyled">
                                 <li class="active"><a href="index.php"><i class="menu-icon icon-home"></i>Home
                                 </a></li>
                                 <li class="active"><a href="../qr/index.php"><i class="menu-icon icon-home"></i>Visit Hours 
@@ -84,7 +68,8 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                 <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
+                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
+                                <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
                                 <li><a href="logout.php"><i class="menu-icon icon-signout"></i>Logout </a></li>
@@ -111,18 +96,19 @@ if ($_SESSION['RollNo']!== 'librarian') {
                                 $name=$row['Name'];
                                 $category=$row['Category'];
                                  $department=$row['Department'];
-                                  $psw=$row['Password'];
+                                  // $psw=$row['Password'];
                                 $email=$row['EmailId'];
                                 $mobno=$row['MobNo'];
 
 
 
-                                echo "<b><u>ID No:</u></b> ".$rno."<br><br>";
+                                   echo "<b><u>ID No:</u></b> ".$rno."<br><br>";
+                                     // echo "<b><u>Password:</u></b> ".$psw."<br><br>";
                                 echo "<b><u>Name:</u></b> ".$name."<br><br>";
                                 echo "<b><u>Category:</u></b> ".$category."<br><br>";
                                  echo "<b><u>Department:</u></b> ".$department."<br><br>";
-                                
-                                 // echo "<b><u>Password:</u></b> ".$psw."<br><br>";
+                             
+                               
                                 echo "<b><u>Email Id:</u></b> ".$email."<br><br>";
                                 echo "<b><u>Mobile No:</u></b> ".$mobno."<br><br>"; 
                             ?>
@@ -131,10 +117,28 @@ if ($_SESSION['RollNo']!== 'librarian') {
                         <br>
                         <br>
 
-                      <!--   <form action="delstu.php" method="post"> 
-                        <button class="btn btn-primary" name="delete" type="submit">Delete</button>  
+                        <form action="delstu.php" method="post"> 
+                        <!-- <button class="btn btn-primary" name="delete" type="submit" onclick="myFunction()">Delete
+                            <script type="text/javascript">
+                                function myFunction(){
+                                    alert('User deleted');
+
+                                }
+                            </script>
+                        </button>   -->
+
+<button onclick="return myFunction2()" name="delete" type="submit" class="btn btn-primary">Delete </button>
+<script>
+function myFunction2() {
+return confirm('Are you sure you want to delete all book?'); } 
+</script>
+
+
+
+
+
                          <input type="hidden" name="RollNo" value="<?php echo $rno?>"> 
-                          </form> -->
+                          </form>
                                                
                                </div>
                            </div>

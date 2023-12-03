@@ -1,9 +1,10 @@
 <?php
+ob_start();
 require('dbconn.php');
 ?>
 
 <?php 
-if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
+if ($_SESSION['RollNo']== 'admin' ) {
     ?>
 
 <!DOCTYPE html>
@@ -52,7 +53,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
                 <div class="row">
                     <div class="span3">
                         <div class="sidebar">
-                          <ul class="widget widget-menu unstyled">
+                             <ul class="widget widget-menu unstyled">
                                 <li class="active"><a href="index.php"><i class="menu-icon icon-home"></i>Home
                                 </a></li>
                                 <li class="active"><a href="../qr/index.php"><i class="menu-icon icon-home"></i>Visit Hours 
@@ -68,7 +69,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
                                 <li><a href="requests.php"><i class="menu-icon icon-tasks"></i>Issue/Return Requests </a></li>
                                 <!-- <li><a href="recommendations.php"><i class="menu-icon icon-list"></i>Book Recommendations </a></li> -->
                                 <li><a href="current.php"><i class="menu-icon icon-list"></i>Currently Issued Books </a></li>
-                                 <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
+                                <li><a href="pre.php"><i class="menu-icon icon-list"></i>Previously Borrowed Books </a></li>
                                 <li><a href="history.php"><i class="menu-icon icon-list"></i>Recent Deletion Books </a></li>
                             </ul>
                             <ul class="widget widget-menu unstyled">
@@ -78,50 +79,69 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
                         <!--/.sidebar-->
                     </div>
                     <!--/.span3-->
-
+                    
                     <div class="span9">
-                    <div class="content">
-
                         <div class="module">
                             <div class="module-head">
-                                <h3>Send a message</h3>
+                                <h3>Update Details</h3>
                             </div>
                             <div class="module-body">
 
-                                    <br >
 
-                                    <form class="form-horizontal row-fluid" action="message.php" method="post">
-                                        <div class="control-group">
-                                            <label class="control-label" for="Rollno"><b>Receiver ID No:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="RollNo" name="RollNo" placeholder="Id No" class="span8" required >
-                                            </div>
+                                <?php
+                                $rollno = $_SESSION['RollNo'];
+                                $sql="select * from LMS.user where RollNo='$rollno'";
+                                $result=$conn->query($sql);
+                                $row=$result->fetch_assoc();
+
+                                $name=$row['Name'];
+                                $email=$row['EmailId'];
+                                $mobno=$row['MobNo'];
+                                $pswd=$row['Password'];
+                                ?>    
+                                
+                                <form class="form-horizontal row-fluid" action="edit_admin_details.php?id=<?php echo $rollno ?>" method="post">
+
+                                    <div class="control-group">
+                                        <label class="control-label" for="Name"><b>Name:</b></label>
+                                        <div class="controls">
+                                            <input type="text" id="Name" name="Name" value= "<?php echo $name?>" class="span8" required>
                                         </div>
-                                         <div class="control-group">
-                                            <label class="control-label" for="Sender"><b>Sender's Name:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Sender" name="Sender" placeholder="Input your name" class="span8" required>
-                                            </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label" for="EmailId"><b>Email Id:</b></label>
+                                        <div class="controls">
+                                            <input type="text" id="EmailId" name="EmailId" value= "<?php echo $email?>" class="span8" required>
                                         </div>
-                                        <div class="control-group">
-                                            <label class="control-label" for="Message"><b>Message:</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Message" name="Message" placeholder="Enter Message" class="span8" required>
-                                            </div>
-                                            <hr>
-                                        <div class="control-group">
-                                            <div class="controls">
-                                                <button type="submit" name="submit"class="btn">Add Message</button>
-                                            </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label" for="MobNo"><b>Mobile Number:</b></label>
+                                        <div class="controls">
+                                            <input type="text" id="MobNo" name="MobNo" value= "<?php echo $mobno?>" class="span8" required>
                                         </div>
-                                    </form>
-                            </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label" for="Password"><b>New Password:</b></label>
+                                        <div class="controls">
+                                            <input type="text" id="Password" name="Password"  value= "<?php echo $pswd?>" class="span8" required>
+                                        </div>
+                                    </div>   
+
+                                    <div class="control-group">
+                                            <div class="controls">
+                                                <button type="submit" name="submit"class="btn-primary"><center>Update Details</center></button>
+                                            </div>
+                                        </div>                                                                     
+
+                                </form>
+                                       
                         </div>
-
-                        
-                        
-                    </div><!--/.content-->
-                </div>
+                        </div>  
+                    </div>
+                    
                     <!--/.span9-->
                 </div>
             </div>
@@ -129,7 +149,7 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
         </div>
 <div class="footer">
             <div class="container">
-                <b class="copyright">&copy;2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan</b>All rights reserved.
+                <b class="copyright">&copy;2022 LMS Login. King A. Albaracin & Mariabil V. Caga-anan </b>All rights reserved.
             </div>
         </div>
         
@@ -145,22 +165,27 @@ if ($_SESSION['RollNo'] == 'admin' && 'ADMIN' && 'Admin') {
 <?php
 if(isset($_POST['submit']))
 {
-    $rollno=$_POST['RollNo'];
-    $message=$_POST['Message'];
-   $Sender=$_POST['Sender'];
+    $rollno = $_GET['id'];
+    $name=$_POST['Name'];
+    $email=$_POST['EmailId'];
+    $mobno=$_POST['MobNo'];
+    $pswd=$_POST['Password'];
 
-$sql1="insert into LMS.message (RollNo,Sender,Msg,Date,Time) values ('$rollno','$Sender','$message',curdate(),curtime())";
+$sql1="update LMS.user set Name='$name', EmailId='$email', MobNo='$mobno', Password='$pswd' where RollNo='$rollno'";
+
+
 
 if($conn->query($sql1) === TRUE){
 echo "<script type='text/javascript'>alert('Success')</script>";
+header( "Refresh:0.01; url=index.php", true, 303);
 }
 else
 {//echo $conn->error;
 echo "<script type='text/javascript'>alert('Error')</script>";
 }
-    
 }
 ?>
+      
     </body>
 
 </html>
